@@ -1,0 +1,38 @@
+<div class="outer">
+    <div class="centered-box">
+        <div class="left-pan">
+            <h1 class="title primary-text">Join the disscussion...</h1>
+            <div class="form">
+                <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+                    <div class="input-container">
+                        <div class="input-field">
+
+                            <input class="input" type="text" id="user" formControlName="user" placeholder="Username"
+                                [ngClass]="{'errored':commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine}" />
+                            <span class="error-message"
+                                *ngIf="commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine">
+                                Username can't be empty.
+                            </span>
+                        </div>
+                        <div class="input-field">
+                            <input id="comment" class="input" formControlName="comment"
+                                placeholder="Write your comment here"
+                                [ngClass]="{'errored':commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine}" />
+                            <span class="error-message"
+                                *ngIf="commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine">
+                                Comment can't be empty.
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <button class="is-primary button" type="submit" [ngClass]="{'disabled':!commentForm.valid}"
+                        [disabled]="!commentForm.valid">Submit</button>
+                </form>
+            </div>
+        </div>
+        <div class="right-pan">
+            <h1 class="title primary-text">Comment history</h1>
+        </div>
+    </div>
+</div>
