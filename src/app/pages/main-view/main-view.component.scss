@@ -34,13 +34,28 @@
                     font-weight: 600;
                 }
                 .replying-to-details{
-                    font-style: italic;
-                    font-size: 14px;
                     display: -webkit-box;
                     -webkit-line-clamp: 3;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    &:hover{
+                        overflow: scroll;
+                        z-index: 100;
+                       -webkit-line-clamp: 7;
+                       transition: 2s;
+                    }
+                    .replying-to-name{
+                        font-weight: 600;
+                        font-size: 14px;
+                        text-transform: uppercase;
+                        text-decoration: underline;
+
+                    }
+                    .replying-to-comment{
+                        font-size: 0.80rem;
+                        font-style: italic;
+                    }
                 }
             }
 
@@ -71,7 +86,55 @@
             padding: 42px;
             border-bottom-right-radius: 8px;
             position: relative;
-            ;
+
+            .comment-list{
+                font-size: 0.75rem;
+                display: flex;
+                justify-content: center;
+                margin-top: 1rem;
+                flex-direction: column;
+                overflow: scroll;
+                max-height: 550px;
+                /* align-items: center; */
+                box-shadow: inset 0px 0px 18px #d9e5e5;
+                justify-content: flex-start;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                border-radius: 11px;
+
+                .comment{
+                    display: flex;
+                    gap:1rem;
+                    align-items: center;
+                    img{
+                        height: 30px;
+                        padding: 0.15rem;
+                        border:0.5px solid black;
+                    }
+
+                    .comment-data{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        
+                        .user-name{
+                            font-weight: 600;
+                            // text-decoration: underline;
+                        }
+                        .user-comment{
+                            text-align: left;
+                        }
+                        .comment-options{
+                            display: flex;
+                            gap:1rem;
+                            text-decoration: underline;
+                            color: blue;
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
+
