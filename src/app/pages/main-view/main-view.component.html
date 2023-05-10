@@ -2,6 +2,18 @@
     <div class="centered-box">
         <div class="left-pan">
             <h1 class="title primary-text">Join the disscussion...</h1>
+            <div class="replying-to-section" *ngIf="false">
+                <span class="replying-to">Replying to:</span>
+                <span class="replying-to-details">
+                    <span class="replying-to-name">Superman</span>:&nbsp;
+                    <span class="replying-to-comment">This seems to be pretty nice. Lorem ipsum dolor sit amet
+                        consectetur adipisicing elit. Dolores suscipit fugit odio repellat a iste, commodi nulla sint
+                        excepturi accusantium. Fugit odit at aperiam officiis provident, ducimus alias. Fuga, iste!
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat quia numquam dolorem non
+                        quibusdam tempora quidem magnam. At vitae dolore necessitatibus, fuga aperiam blanditiis ullam?
+                        Eveniet eius laborum repudiandae magni!</span>
+                </span>
+            </div>
             <div class="form">
                 <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
                     <div class="input-container">
@@ -11,7 +23,7 @@
                                 [ngClass]="{'errored':commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine}" />
                             <span class="error-message"
                                 *ngIf="commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine">
-                                Username can't be empty.
+                                *Username can't be empty.
                             </span>
                         </div>
                         <div class="input-field">
@@ -20,7 +32,7 @@
                                 [ngClass]="{'errored':commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine}" />
                             <span class="error-message"
                                 *ngIf="commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine">
-                                Comment can't be empty.
+                                *Comment can't be empty.
                             </span>
 
                         </div>

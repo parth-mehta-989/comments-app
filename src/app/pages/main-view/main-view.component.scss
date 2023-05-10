@@ -19,9 +19,33 @@
             padding: 42px;
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
+            .replying-to-section{
+                margin-top: 15px;
+                display: flex;
+                padding: 8px;
+                gap: 5px;
+                border: 1px solid a;
+                box-shadow: inset 1px 0px 5px 1px lightyellow;
+                border-radius: 8px;
+                background: bisque;
+                flex-direction: column;
+                max-height: 300px;
+                .replying-to{
+                    font-weight: 600;
+                }
+                .replying-to-details{
+                    font-style: italic;
+                    font-size: 14px;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
 
             .form{
-                margin-top:2rem;
+                margin-top:1rem;
 
                 .input-container{
                     display: flex;
