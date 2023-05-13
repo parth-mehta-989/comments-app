@@ -2,28 +2,22 @@
     <div class="centered-box">
         <div class="left-pan">
             <h1 class="title primary-text">Join the disscussion...</h1>
-            <div class="replying-to-section" *ngIf="false">
+            <div class="replying-to-section" *ngIf="this.commentBeingRepliedTo">
+                <span class="clear-button" (click)="clearEditionOrReply()"><img
+                        src="../../../assets/close-icon.svg"></span>
                 <span class="replying-to">Replying to:</span>
                 <span class="replying-to-details">
-                    <span class="replying-to-name">Superman</span>:
-                    <span class="replying-to-comment">This seems to be pretty nice. Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Dolores suscipit fugit odio repellat a iste, commodi nulla sint
-                        excepturi accusantium. Fugit odit at aperiam officiis provident, ducimus alias. Fuga, iste!
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat quia numquam dolorem non
-                        quibusdam tempora quidem magnam. At vitae dolore necessitatibus, fuga aperiam blanditiis ullam?
-                        Eveniet eius laborum repudiandae magni!</span>
+                    <span class="replying-to-name">{{commentBeingRepliedTo.username}}</span>:
+                    <span class="replying-to-comment">{{commentBeingRepliedTo.data}}</span>
                 </span>
             </div>
-            <div class="replying-to-section" *ngIf="false">
+            <div class="replying-to-section" *ngIf="this.editedComment">
+                <span class="clear-button" (click)="clearEditionOrReply()"><img
+                        src="../../../assets/close-icon.svg"></span>
                 <span class="replying-to">Editing:</span>
                 <span class="replying-to-details">
                     <span class="replying-to-name">You</span>:&nbsp;
-                    <span class="replying-to-comment">This seems to be pretty nice. Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Dolores suscipit fugit odio repellat a iste, commodi nulla sint
-                        excepturi accusantium. Fugit odit at aperiam officiis provident, ducimus alias. Fuga, iste!
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat quia numquam dolorem non
-                        quibusdam tempora quidem magnam. At vitae dolore necessitatibus, fuga aperiam blanditiis ullam?
-                        Eveniet eius laborum repudiandae magni!</span>
+                    <span class="replying-to-comment">{{this.editedComment.data}}</span>
                 </span>
             </div>
             <div class="form">
@@ -31,20 +25,27 @@
                     <div class="input-container">
                         <div class="input-field">
 
-                            <input class="input" type="text" id="user" formControlName="user" placeholder="Username"
-                                [ngClass]="{'errored':commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine}" />
+                            <input *ngIf="!this.editedComment" class="input" type="text" id="username"
+                                formControlName="username" placeholder="Username"
+                                [ngClass]="{'errored':commentForm.controls['username'].errors?.['required'] && !commentForm.controls['username'].pristine}" />
+
                             <span class="error-message"
-                                *ngIf="commentForm.controls['user'].errors?.['required'] && !commentForm.controls['user'].pristine">
-                                *Username can't be empty.
+                                *ngIf="commentForm.controls['username'].errors?.['required'] && !commentForm.controls['username'].pristine">
+                                * Username can't be empty.
+                            </span>
+                            <span class="error-message" *ngIf="(
+                                    commentForm.controls['username'].errors?.['maxlength'] || commentForm.controls['username'].errors?.['minlength']) 
+                                    && !commentForm.controls['username'].pristine">
+                                * Username must be between 2 and 30 characters.
                             </span>
                         </div>
                         <div class="input-field">
-                            <input id="comment" class="input" formControlName="comment"
+                            <textarea id="comment" class="input" formControlName="comment"
                                 placeholder="Write your comment here"
-                                [ngClass]="{'errored':commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine}" />
+                                [ngClass]="{'errored':commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine}"></textarea>
                             <span class="error-message"
                                 *ngIf="commentForm.controls['comment'].errors?.['required'] && !commentForm.controls['comment'].pristine">
-                                *Comment can't be empty.
+                                * Comment can't be empty.
                             </span>
 
                         </div>
@@ -57,151 +58,68 @@
         </div>
         <div class="right-pan">
             <h1 class="title primary-text">Comment history</h1>
-            <div class="comment-list">
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Parth Mehta
-                        </span>
-                        <span class="user-comment">So many things about this movie that I did not like... but one thing
-                            that I loved is the story. So well crafted...</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
+            <div class="comment-list" [ngClass]="{'no-comment':!(comments?.length)}">
+                <div class="comment-container" *ngFor="let comment of comments">
+                    <div class="comment">
+                        <img src="../../../assets/user_image.png" alt="user-image.png">
+                        <div class="comment-data">
+                            <span class="user-name">
+                                {{comment.username}}
+                            </span>
+                            <span class="user-comment">{{comment.data}} <span *ngIf="comment.updated"
+                                    class="edited-suffix">(edited)</span></span>
+
+                            <span class="comment-options">
+                                <span class="option" (click)="replyToComment(comment)">Reply</span>
+                                <span class="option" (click)="editComment(comment)">Edit</span>
+                                <span class="option" (click)="deleteComment(comment)">Delete</span>
+                                <span class="option"
+                                    *ngIf="comment.children?.length && comment.id !== repliesShownForCommentId"
+                                    (click)="toggleReplies(comment.id)">Show replies</span>
+                                <span class="option"
+                                    *ngIf="comment.children?.length && comment.id === repliesShownForCommentId"
+                                    (click)="toggleReplies(comment.id)">Hide replies</span>
+                            </span>
+
+                        </div>
+                        <span class="comment-time">
+                            <span *ngIf="comment.updated">updated: {{ comment.updated| date:'shortTime':'':'en-US' }} {{
+                                comment.updated | date:'MMM d, y':'':'en-IN' }}<br></span>
+                            <span>created: {{ comment.created| date:'shortTime':'':'en-US' }} {{
+                                comment.created | date:'MMM d, y':'':'en-IN' }}</span>
                         </span>
                     </div>
+                    <div class="child-list" *ngIf="comment.id === repliesShownForCommentId">
+                        <div class="child" *ngFor="let child of comment.children">
+                            <img src="../../../assets/user_image.png" alt="user-image.png">
+                            <div class="comment-data">
+                                <span class="user-name">
+                                    {{child.username}}
+                                </span>
+                                <span class="user-comment">{{child.data}} <span *ngIf="child.updated"
+                                        class="edited-suffix">(edited)</span></span>
 
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Animesh Chatterjee
-                        </span>
-                        <span class="user-comment">This is a very awesome, super duper hit movie. Who can not like this
-                            yrr. I will always suggesst this.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
+                                <span class="comment-options">
+                                    <span class="option" (click)="replyToComment(child)">Reply</span>
+                                    <span class="option" (click)="editComment(child)">Edit</span>
+                                    <span class="option" (click)="deleteComment(child)">Delete</span>
+                                </span>
+
+                            </div>
+                            <span class="comment-time">
+                                <span *ngIf="child.updated">updated: {{ child.updated| date:'shortTime':'':'en-US'
+                                    }} {{
+                                    child.updated | date:'MMM d, y':'':'en-IN' }}<br></span>
+                                <span>created: {{ child.created| date:'shortTime':'':'en-US' }} {{
+                                    child.created | date:'MMM d, y':'':'en-IN' }}</span>
+                            </span>
+                        </div>
                     </div>
-
                 </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            User 1
-                        </span>
-                        <span class="user-comment">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Dolor.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
+                <span class="no-comment-message" *ngIf="!(comments?.length)">
+                    No comments yet. <br>Add one to start the discussion...
+                </span>
 
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Parth Mehta
-                        </span>
-                        <span class="user-comment">So many things about this movie that I did not like... but one thing
-                            that I loved is the story. So well crafted...</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Animesh Chatterjee
-                        </span>
-                        <span class="user-comment">This is a very awesome, super duper hit movie. Who can not like this
-                            yrr. I will always suggesst this.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            User 1
-                        </span>
-                        <span class="user-comment">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Dolor.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Parth Mehta
-                        </span>
-                        <span class="user-comment">So many things about this movie that I did not like... but one thing
-                            that I loved is the story. So well crafted...</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            Animesh Chatterjee
-                        </span>
-                        <span class="user-comment">This is a very awesome, super duper hit movie. Who can not like this
-                            yrr. I will always suggesst this.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="comment">
-                    <img src="../../../assets/user_image.png" alt="user-image.png">
-                    <div class="comment-data">
-                        <span class="user-name">
-                            User 1
-                        </span>
-                        <span class="user-comment">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Dolor.</span>
-                        <span class="comment-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                            <span>Show replies</span>
-                        </span>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
