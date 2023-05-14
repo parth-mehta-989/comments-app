@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 export class WebrequestService {
   readonly  ROOT_URL :string;
   constructor(private http: HttpClient) {
-    this.ROOT_URL = `http://localhost:9090`;
+    this.ROOT_URL = environment.rootUrl;
    }
  
 
