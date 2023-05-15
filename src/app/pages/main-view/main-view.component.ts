@@ -86,9 +86,9 @@ export class MainViewComponent implements OnInit {
   clearEditionOrReply() {
     this.editedComment = null as unknown as Comment;
     this.commentBeingRepliedTo = null as unknown as Comment;
+    this.commentForm.reset()
     this.commentForm.get('username')?.addValidators([Validators.required, Validators.minLength(2), Validators.maxLength(30)])
     this.commentForm.get('username')?.updateValueAndValidity()
-    this.commentForm.reset()
     this.commentForm.enable()
     
   }
@@ -124,6 +124,8 @@ export class MainViewComponent implements OnInit {
           this.getAllComments()
           this.editedComment = null as unknown as Comment;
           this.commentForm.reset();
+          this.commentForm.get('username')?.addValidators([Validators.required, Validators.minLength(2), Validators.maxLength(30)])
+          this.commentForm.get('username')?.updateValueAndValidity()
           this.commentForm.enable()
 
         },
