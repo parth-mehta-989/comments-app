@@ -54,6 +54,7 @@ export class MainViewComponent implements OnInit {
         next: (_) => {
           this.getAllComments();
           this.commentForm.reset();
+          alert("successfully deleted comment...")
         },
         error: (error) => {
           alert("something went wrong")
@@ -106,6 +107,8 @@ export class MainViewComponent implements OnInit {
         }
         this.commentForm.reset();
         this.commentForm.enable()
+        alert("comment added successfully")
+
       },
       error: (error) => {
         alert("something went wrong")
@@ -127,6 +130,7 @@ export class MainViewComponent implements OnInit {
           this.commentForm.get('username')?.addValidators([Validators.required, Validators.minLength(2), Validators.maxLength(30)])
           this.commentForm.get('username')?.updateValueAndValidity()
           this.commentForm.enable()
+          alert("comment editing was successful")
 
         },
         error: (error) => {
